@@ -54,40 +54,40 @@ class Calculator {
             default:
                 return
         }
+        this.readyToReset = true;
         this.currOper = computation;
         this.opertion = undefined;
         this.prvOper = '';
     }
 
-    getDisplayNumber(number){
+    getDisplayNumber(number) {
         const stringNumber = number.toString();
         const integerDigits = parseFloat(stringNumber.split('.')[0]);
         const decimalDigits = stringNumber.split('.')[1];
-        
+
         let integerDisplay;
         if (isNaN(integerDigits)) {
             integerDisplay = '';
-        }
-        else{
-            integerDisplay = integerDigits.toLocaleString('en', {maximumFractionDigits: 0});
+        } else {
+            integerDisplay = integerDigits.toLocaleString('en', {
+                maximumFractionDigits: 0
+            });
         }
 
-        if(decimalDigits != null) {
+        if (decimalDigits != null) {
             return `${integerDisplay}.${decimalDigits} `;
-        }
-        else{
+        } else {
             return integerDisplay;
         }
     }
     updateDisplay() {
         this.currOperTxtElement.innerText = this.getDisplayNumber(this.currOper);
-        if(this.opertion != null){
+        if (this.opertion != null) {
             this.prevOperTxtElement.innerText = `${this.getDisplayNumber(this.prvOper)} ${this.opertion}`;
-        }
-        else{
+        } else {
             this.prevOperTxtElement.innerText = '';
         }
-        
+
     }
 }
 
@@ -103,6 +103,12 @@ const calculator = new Calculator(prevOperTxtElement, currOperTxtElement);
 
 allNumBtn.forEach(button => {
     button.addEventListener('click', () => {
+        if (calculator.prvOper === "" &&
+            calculator.currOper !== "" &&
+            calculator.readyToReset) {
+            calculator.currOper = "";
+            calculator.readyToReset = false;
+        }
         calculator.appendNumber(button.innerText);
         calculator.updateDisplay();
     })
